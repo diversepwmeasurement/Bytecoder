@@ -1,35 +1,48 @@
-name: Build Workflow
-on:
-  push:
-    branches: [ master ]
 jobs:
   build:
     environment: ci
-    runs-on: 'ubuntu-20.04'
+    runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v2
-        with:
-          java-version: 8
-          distribution: "temurin"
-      - run: |
-          cat <(echo -e "${{ secrets.OSSRH_GPG_SECRET_KEY }}") | gpg --batch --import
-          gpg --list-secret-keys --keyid-format LONG
-      - run: |
-          wget https://github.com/gohugoio/hugo/releases/download/v0.59.0/hugo_0.59.0_Linux-64bit.tar.gz
-          tar xzf hugo_0.59.0_Linux-64bit.tar.gz
-          sudo chmod +x hugo
-          git clone https://github.com/matcornic/hugo-theme-learn.git ./manual/themes/hugo-theme-learn
-      - run: mvn --no-transfer-progress --batch-mode --settings .mvn/settings.xml clean javadoc:jar deploy -P notest -P signed
-        env:
-          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-          GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
-      - run: ./hugo -s ./manual -d ../integrationtest/target/bytecoder-integrationtest
-      - uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: ./integrationtest/target/bytecoder-integrationtest
-          CLEAN: true
+    - continue-on-error: true
+      uses: actions/checkout@v2
+    - continue-on-error: true
+      uses: actions/setup-java@v2
+      with:
+        distribution: temurin
+        java-version: 8
+    - continue-on-error: true
+      run: 'cat <(echo -e "${{ secrets.OSSRH_GPG_SECRET_KEY }}") | gpg --batch --import
 
+        gpg --list-secret-keys --keyid-format LONG
+
+        '
+    - continue-on-error: true
+      run: 'wget https://github.com/gohugoio/hugo/releases/download/v0.59.0/hugo_0.59.0_Linux-64bit.tar.gz
+
+        tar xzf hugo_0.59.0_Linux-64bit.tar.gz
+
+        sudo chmod +x hugo
+
+        git clone https://github.com/matcornic/hugo-theme-learn.git ./manual/themes/hugo-theme-learn
+
+        '
+    - continue-on-error: true
+      env:
+        GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
+        SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+      run: mvn --no-transfer-progress --batch-mode --settings .mvn/settings.xml clean
+        javadoc:jar deploy -P notest -P signed
+    - continue-on-error: true
+      run: ./hugo -s ./manual -d ../integrationtest/target/bytecoder-integrationtest
+    - continue-on-error: true
+      uses: JamesIves/github-pages-deploy-action@3.7.1
+      with:
+        BRANCH: gh-pages
+        CLEAN: true
+        FOLDER: ./integrationtest/target/bytecoder-integrationtest
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+name: Build Workflow
+on:
+  repository_dispatch:
+    types: trigger-ga___build.yml
