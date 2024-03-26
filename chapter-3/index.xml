@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Internals on Bytecoder - JVM to JavaScript, OpenCL and WebAssembly Transpiler</title>
+    <link>https://mirkosertic.github.io/Bytecoder/chapter-3/</link>
+    <description>Recent content in Internals on Bytecoder - JVM to JavaScript, OpenCL and WebAssembly Transpiler</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 25 Oct 2019 14:42:16 +0200</lastBuildDate>
+    
+	<atom:link href="https://mirkosertic.github.io/Bytecoder/chapter-3/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Intermediate Representation</title>
+      <link>https://mirkosertic.github.io/Bytecoder/chapter-3/page-3-a/</link>
+      <pubDate>Fri, 25 Oct 2019 14:49:24 +0200</pubDate>
+      
+      <guid>https://mirkosertic.github.io/Bytecoder/chapter-3/page-3-a/</guid>
+      <description>The Bytecoder internal intermediate representation is basically a directed graph. The key idea behind this is described in this paper.
+Given this Java source code:
+@Test public void testSimpleLoop() { int x = 0; for (int i = 0; i &amp;lt; 100; i++) { x = x + i; } }  the following intermediate representation graph is generated (in its first, unoptimized form):
+This graph combines data flow analysis and control flow into one big graph.</description>
+    </item>
+    
+  </channel>
+</rss>
